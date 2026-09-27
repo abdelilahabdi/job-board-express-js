@@ -222,6 +222,21 @@
     gap: 0.75rem;
 }
 
+
+
+
+
+
+
+
+
+
+.applications-grid .fa-heart,
+.applications-grid .favorite-btn,
+.applications-grid .heart-icon {
+    display: none !important;
+}
+
 @media (max-width: 900px) {
     .nav-links {
         display: none;

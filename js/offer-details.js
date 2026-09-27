@@ -1,5 +1,5 @@
 import { getData } from "./utils/data.js";
-import { getFavorites, toggleFavorite, getApplications, saveApplication } from "./utils/storage.js";
+import { getFavorites, toggleFavorite, getApplications, saveApplication, removeApplication } from "./utils/storage.js";
 
 const urlParams = new URLSearchParams(window.location.search);
 const offerId = urlParams.get('id');
@@ -18,7 +18,7 @@ if (!offer) {
 }
 
 function renderOfferDetails(offer) {
-       
+        
     const companyName = document.querySelector('.company-details h3');
     if (companyName) companyName.textContent = offer.company;
 
@@ -73,21 +73,31 @@ function renderOfferDetails(offer) {
         });
     }
 
-       
+        
     const applyBtn = document.querySelector('.apply-card .btn-primary');
     if (applyBtn) {
         updateApplyButtonState(applyBtn, offer.id);
 
         applyBtn.addEventListener('click', () => {
-            saveApplication(offer.id);
-            updateApplyButtonState(applyBtn, offer.id);
+            const apps = getApplications().map(item => String(item));
+            const isApplied = apps.includes(String(offer.id));
 
-                 
-            if (offer.applyUrl) {
-                window.open(offer.applyUrl, '_blank');
-            } else if (offer.email) {
-                window.location.href = `mailto:${offer.email}`;
+            if (isApplied) {
+                // Ila kan déjà 'Applied', ghadi ymss7o w yrej3o 'Apply'
+                removeApplication(offer.id);
+            } else {
+                // Ila kan 'Apply', ghadi ysauvgardi l-application w yft7 l-lien/email
+                saveApplication(offer.id);
+
+                if (offer.applyUrl) {
+                    window.open(offer.applyUrl, '_blank');
+                } else if (offer.email) {
+                    window.location.href = `mailto:${offer.email}`;
+                }
             }
+
+            // Update l-état dyal l-bouton f l-blassa
+            updateApplyButtonState(applyBtn, offer.id);
         });
     }
 }
@@ -112,5 +122,9 @@ function updateApplyButtonState(button, id) {
     if (isApplied) {
         button.innerHTML = `Applied <i class="fa-solid fa-check"></i>`;
         button.style.backgroundColor = "#10B981";
+    } else {
+        button.innerHTML = `Apply <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.8rem;"></i>`;
+        button.style.backgroundColor = ""; // Yrejje3 l-couleur d-origin f CSS
     }
 }
+

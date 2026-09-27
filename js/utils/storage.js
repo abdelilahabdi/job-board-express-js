@@ -46,3 +46,15 @@ export function saveApplication(offerId) {
         localStorage.setItem('applications', JSON.stringify(apps));
     }
 }
+
+
+export function removeApplication(offerId) {
+    let apps = getApplications().map(item => String(item));
+    const id = String(offerId);
+    
+    
+    // remove this offre
+    apps = apps.filter(item => item !== id);
+    
+    localStorage.setItem('applications', JSON.stringify(apps));
+}
