@@ -1,0 +1,75 @@
+<%- include('partials/header') %>
+
+<main class="container" style="margin-top: 2rem;">
+    <h1>Recherche d'offres d'emploi</h1>
+    
+    <!-- نموذج البحث والفلترة -->
+    <form action="/search" method="GET" class="filter-form" style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem; background: #fff; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+        <input type="text" name="q" value="<%= filters.q || '' %>" placeholder="Mot-clé..." style="padding: 0.6rem; border: 1px solid #ccc; border-radius: 5px; flex: 1; min-width: 200px;">
+        
+        <select name="city" style="padding: 0.6rem; border: 1px solid #ccc; border-radius: 5px;">
+            <option value="all">Toutes les villes</option>
+            <% cities.forEach(c => { %>
+                <option value="<%= c.ville %>" <%= filters.city === c.ville ? 'selected' : '' %>><%= c.ville %></option>
+            <% }); %>
+        </select>
+
+        <select name="contrat" style="padding: 0.6rem; border: 1px solid #ccc; border-radius: 5px;">
+            <option value="all">Tous les contrats</option>
+            <option value="Stage" <%= filters.contrat === 'Stage' ? 'selected' : '' %>>Stage</option>
+            <option value="Alternance" <%= filters.contrat === 'Alternance' ? 'selected' : '' %>>Alternance</option>
+        </select>
+
+        <select name="tech" style="padding: 0.6rem; border: 1px solid #ccc; border-radius: 5px;">
+            <option value="all">Toutes les technologies</option>
+            <% technologies.forEach(t => { %>
+                <option value="<%= t.nom %>" <%= filters.tech === t.nom ? 'selected' : '' %>><%= t.nom %></option>
+            <% }); %>
+        </select>
+
+        <select name="sort" style="padding: 0.6rem; border: 1px solid #ccc; border-radius: 5px;">
+            <option value="desc" <%= filters.sort === 'desc' ? 'selected' : '' %>>Plus récents</option>
+            <option value="asc" <%= filters.sort === 'asc' ? 'selected' : '' %>>Plus anciens</option>
+        </select>
+
+        <button type="submit" class="btn-primary" style="padding: 0.6rem 1.5rem; border-radius: 5px; border: none; cursor: pointer;">Filtrer</button>
+    </form>
+
+    <!-- قائمة النتائج -->
+    <div class="grid">
+        <% if (offers.length === 0) { %>
+            <p>Aucune offre ne correspond à votre recherche.</p>
+        <% } else { %>
+            <% offers.forEach(offer => { %>
+                <div class="offer-card">
+                    <div class="card-header">
+                        <span class="company-logo"><%= offer.entreprise_nom[0] %></span>
+                        <div class="company-info">
+                            <h3><%= offer.entreprise_nom %></h3>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h4><%= offer.titre %></h4>
+                        <div class="job-meta">
+                            <span class="badge"><%= offer.type_contrat %></span>
+                            <span><i class="fa-solid fa-location-dot"></i> <%= offer.ville %></span>
+                        </div>
+                        <p><%= offer.description_courte %></p>
+                        <div class="tags-container">
+                            <% if (offer.technologies) { %>
+                                <% offer.technologies.split(',').forEach(tech => { %>
+                                    <span class="tag"><%= tech %></span>
+                                <% }); %>
+                            <% } %>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="/offer/<%= offer.id %>" class="btn-link">View offer →</a>
+                    </div>
+                </div>
+            <% }); %>
+        <% } %>
+    </div>
+</main>
+
+<%- include('partials/footer') %>
