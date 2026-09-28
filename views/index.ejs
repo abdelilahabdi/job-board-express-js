@@ -1,0 +1,65 @@
+<%- include('partials/header') %>
+
+<header class="hero">
+    <div class="hero-badge">
+        <i class="fa-solid fa-circle" style="font-size: 6px; margin-right: 5px;"></i>
+        Plateforme dédiée aux étudiants en développement web
+    </div>
+    <h1>Find Your Next<br>Opportunity</h1>
+    <p>Discover the best internship and work-study opportunities in web development.</p>
+
+    <form action="/search" method="GET" class="search-box">
+        <div class="search-input">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input name="q" type="text" placeholder="Job title or keyword">
+        </div>
+        <button type="submit" class="btn-primary" style="border-radius: 0.5rem; padding: 0.8rem 1.5rem;">Search</button>
+    </form>
+</header>
+
+<main class="container">
+    <div class="section-header">
+        <h2>Dernières Offres d'emploi</h2>
+    </div>
+
+    <div class="grid">
+        <% if (offers.length === 0) { %>
+            <p>Aucune offre disponible pour le moment.</p>
+        <% } else { %>
+            <% offers.forEach(offer => { %>
+                <div class="offer-card">
+                    <div class="card-header">
+                        <span class="company-logo"><%= offer.entreprise_nom[0] %></span>
+                        <div class="company-info">
+                            <h3><%= offer.entreprise_nom %></h3>
+                        </div>
+                        <button class="favorite-btn" data-id="<%= offer.id %>">
+                            <i class="fa-regular fa-heart"></i>
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <h4><%= offer.titre %></h4>
+                        <div class="job-meta">
+                            <span class="badge"><%= offer.type_contrat %></span>
+                            <span><i class="fa-solid fa-location-dot"></i> <%= offer.ville %></span>
+                        </div>
+                        <p><%= offer.description_courte %></p>
+                        
+                        <div class="tags-container">
+                            <% if (offer.technologies) { %>
+                                <% offer.technologies.split(',').forEach(tech => { %>
+                                    <span class="tag"><%= tech %></span>
+                                <% }); %>
+                            <% } %>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="/offer/<%= offer.id %>" class="btn-link">View offer →</a>
+                    </div>
+                </div>
+            <% }); %>
+        <% } %>
+    </div>
+</main>
+
+<%- include('partials/footer') %>
